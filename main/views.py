@@ -48,8 +48,9 @@ def data(request):
 
     for s in statuses:
         if mark in s.text:
-            print s.created_at_in_seconds, s.text
-            values[s.created_at_in_seconds] = [float(value) for value in re.findall(nums_pattern, s.text)][0]
+            results = [float(value) for value in re.findall(nums_pattern, s.text)]
+            if results:
+                values[s.created_at_in_seconds] = results[0]
 
     description = {"date": ("datetime", "Date"),
                    "value": ("number", mark + " values")}

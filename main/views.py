@@ -48,9 +48,11 @@ def data(request):
 
     for s in statuses:
         if mark in s.text:
-            results = [float(value) for value in re.findall(nums_pattern, s.text)]
+            results = [float(value.replace(",",".")) for value in re.findall(nums_pattern, s.text)]
             if results:
                 values[s.created_at_in_seconds] = results[0]
+
+    log.info("%d statuses found" % len(values))
 
     description = {"date": ("datetime", "Date"),
                    "value": ("number", mark + " values")}
@@ -77,7 +79,7 @@ def index(request):
     howmuch = request.GET.get("howmuch", 500)
     
     return render_to_response("main.html", {
-        "query" : urllib.urlencode({"name" : name, "mark" : mark, "howmuch" : howmuch}),
+        "query" : urllib.urlencode({"name" : name, "mark" : mark.encode("utf-8"), "howmuch" : howmuch}),
         "name" : name,
         "mark" : mark
     })

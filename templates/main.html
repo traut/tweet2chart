@@ -128,6 +128,8 @@
             }
 
             function handleQueryResponse(response) {
+                loading.dispose();
+                
                 if (response.isError()) {
                     alert('Error in query: ' + response.getMessage() + ' ' + response.getDetailedMessage());
                     return;

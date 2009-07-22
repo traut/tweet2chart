@@ -45,29 +45,32 @@ def data(request):
     statuses = tapi.GetUserTimeline(username, count=howmuch)
 
     values = {}
+    messages = {}
 
     for s in statuses:
         if mark in s.text:
-            results = [float(value.replace(",",".")) for value in re.findall(nums_pattern, s.text)]
+            results = [float(value.replace(",",".")) for value in re.findall(nums_pattern, s.text, re.UNICODE | re.M | re.I | re.S)]
             if results:
                 values[s.created_at_in_seconds] = results[0]
+                messages[s.created_at_in_seconds] = s.text
 
     log.info("%d statuses found" % len(values))
 
     description = {"date": ("datetime", "Date"),
-                   "value": ("number", mark + " values")}
+                   "value": ("number", mark + " values"),
+                   "message" : ("string", "Tweets")}
         
     data = []
     
     for d, value in values.items():
         #for v in value:
-        data.append({"date" : datetime.fromtimestamp(d), "value" : value})
+        data.append({"date" : datetime.fromtimestamp(d), "value" : value, "message" : messages[d]})
         
                    
     data_table = gviz_api.DataTable(description)
     data_table.LoadData(data)
     
-    responce_data = data_table.ToJSonResponse(columns_order=("date", "value"), order_by="date")
+    responce_data = data_table.ToJSonResponse(columns_order=("date", "value", "message"), order_by="date")
                                       
     ret = HttpResponse(responce_data, mimetype="text/plain")
     return ret
@@ -88,10 +91,13 @@ def search(request, user=None, mark="#chartit", howmuch=500):
         mark = "#chartit"
         
     log.info("%s %s %d" % (user, mark, howmuch))
+    
+    query = "%s %s" % (user, mark)
+    
     return render_to_response("main.html", {
         "query" : urllib.urlencode({"user" : user, "mark" : mark.encode("utf-8"), "howmuch" : howmuch}),
         "user" : user,
         "mark" : mark,
-        "marksearch" : urllib.urlencode({"q" : "%s %s" % (user, mark)})
+        "marksearch" : urllib.urlencode({"q" : query.encode("utf-8")})
     })
     

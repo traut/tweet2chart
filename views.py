@@ -72,13 +72,21 @@ def data(request):
     ret = HttpResponse(responce_data, mimetype="text/plain")
     return ret
     
+def index(request):
+    return render_to_response("main.html")
+    
 
-def index(request, user=None, mark=None, howmuch=500):
+def search(request, user=None, mark="#chartit", howmuch=500):
+    
     try:
         howmuch = int(howmuch)
     except ValueError:
         log.info("Unappropriate value in howmuch: %s" % howmuch)
         howmuch = 500
+        
+    if not mark:
+        mark = "#chartit"
+        
     log.info("%s %s %d" % (user, mark, howmuch))
     return render_to_response("main.html", {
         "query" : urllib.urlencode({"user" : user, "mark" : mark.encode("utf-8"), "howmuch" : howmuch}),

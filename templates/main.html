@@ -112,7 +112,7 @@
     {% if user and mark %}
     	
         <h3><a href="http://twitter.com/{{user}}" target="_blank">{{user}}</a>'s values for <a href="http://search.twitter.com/search?{{marksearch}}">{{mark}}</a></h3>
-        <div id="chart_div" style="height:500px;width:800px;"></div>
+        <div id="chart_div" style="height:500px;width:90%;"></div>
         
 
     	<script type="text/javascript">
@@ -147,7 +147,7 @@
                                   'displayZoomButtons': false,
                                   'allowHtml' : true,
                                   'displayAnnotationsFilter' : true,
-                                  
+                                  'annotationsWidth' : 40,
                                   });
             }
         </script>

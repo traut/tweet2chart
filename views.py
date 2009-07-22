@@ -31,7 +31,7 @@ def __merge(lst, res=[]):
 
 
 def data(request):
-    username = request.GET.get("name", None)
+    username = request.GET.get("user", None)
     mark = request.GET.get("mark", None)
     
     howmuch = int(request.GET.get("howmuch", 300))
@@ -73,14 +73,17 @@ def data(request):
     return ret
     
 
-def index(request):
-    name = request.GET.get("name", "Bad_Bam")
-    mark = request.GET.get("mark", "#nikeplus")
-    howmuch = request.GET.get("howmuch", 500)
-    
+def index(request, user=None, mark=None, howmuch=500):
+    try:
+        howmuch = int(howmuch)
+    except ValueError:
+        log.info("Unappropriate value in howmuch: %s" % howmuch)
+        howmuch = 500
+    log.info("%s %s %d" % (user, mark, howmuch))
     return render_to_response("main.html", {
-        "query" : urllib.urlencode({"name" : name, "mark" : mark.encode("utf-8"), "howmuch" : howmuch}),
-        "name" : name,
-        "mark" : mark
+        "query" : urllib.urlencode({"user" : user, "mark" : mark.encode("utf-8"), "howmuch" : howmuch}),
+        "user" : user,
+        "mark" : mark,
+        "marksearch" : urllib.urlencode({"q" : "%s %s" % (user, mark)})
     })
     

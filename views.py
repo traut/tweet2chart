@@ -21,7 +21,7 @@ log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
 
 tapi = twitter.Api()
-nums_pattern = r'\s[\d]+[.,]?[\d]+\s'
+nums_pattern = r'\s[\d]+[.,]?[\d]*\s'
 
 def __merge(lst, res=[]):
     for el in lst:
